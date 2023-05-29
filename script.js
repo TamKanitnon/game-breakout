@@ -28,8 +28,8 @@ const ctx = canvas.getContext("2d");
 
 let x = canvas.width / 2;
 let y = canvas.height - 30;
-let dx = +0;
-let dy = -4;
+let dx = +2;
+let dy = -8;
 const ballRadius = 10;
 const paddleHeight = 10;
 const paddleWidth = 200;
@@ -37,6 +37,7 @@ let paddleX = (canvas.width - paddleWidth) / 2;
 let rightPressed = false;
 let leftPressed = false;
 let score = 0;
+let lives = 3;
 
 // Setup the brick variables
 const brickRowCount = 4;
@@ -55,10 +56,17 @@ for(let c = 0; c < brickColumnCount; c++) {
     }
 }
 
+function drawLives() {
+    ctx.font = "16px Arial";
+    ctx.fillStyle = "black";
+    ctx.fillText(`Lives: ${lives}`, canvas.width - 65, 20);
+}
+
 function drawScore() {
     ctx.font = "16px Arial";
     ctx.fillStyle = "black";
     ctx.fillText(`Score: ${score} / ${brickColumnCount*brickRowCount}`, 8, 20);
+    ctx.fillText(`เกมนี้พัฒนาโดย "ตาม คณิตนนท์"`, 400, 20);
 }
 
 function collisionDetection() {
@@ -73,7 +81,7 @@ function collisionDetection() {
                     if(score === brickColumnCount*brickRowCount) {
                         alert("YOU WIN, Congratulations!");
                         document.location.reload();
-                        clearInterval(interval);
+                        // clearInterval(interval);
                     }
                 }
             }
@@ -123,6 +131,7 @@ function draw() {
     drawBricks();
     collisionDetection();
     drawScore();
+    drawLives();
 
     if(y + dy < ballRadius) { // check top
         dy = -dy;
@@ -134,9 +143,18 @@ function draw() {
         if(paddleX < x && x < paddleX + paddleWidth) {
             dy = -dy;
         } else {
-            alert("GAME OVER");
-            document.location.reload();
-            clearInterval(interval);
+            lives = lives - 1;
+            if(!lives) {
+                alert("GAME OVER");
+                document.location.reload();
+                // clearInterval(interval);
+            } else {
+                x = canvas.width / 2;
+                y = canvas.height - 30;
+                dx = +2;
+                dy = -8;
+                paddleX = (canvas.width - paddleWidth) / 2;
+            }
         }
     }
 
@@ -151,11 +169,15 @@ function draw() {
 
     x = x + dx;
     y = y + dy;
+    requestAnimationFrame(draw);
 }
 
-let interval = setInterval(draw, 10);
+// let interval = setInterval(draw, 10);
+draw();
+
 document.addEventListener("keydown", keyDownHandler, false);
 document.addEventListener("keyup", keyUpHandler, false);
+document.addEventListener("mousemove", mouseMoveHandler, false);
 
 function keyDownHandler(event) {
     if(event.key === "ArrowRight") {
@@ -170,5 +192,12 @@ function keyUpHandler(event) {
         rightPressed = false;
     } else if(event.key === "ArrowLeft") {
         leftPressed = false;
+    }
+}
+
+function mouseMoveHandler(event) {
+    const relativeX = event.clientX - canvas.offsetLeft;
+    if(0 < relativeX && relativeX < canvas.width) {
+        paddleX = relativeX - (paddleWidth / 2);
     }
 }
