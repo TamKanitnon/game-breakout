@@ -1,4 +1,6 @@
 const canvas = document.getElementById("myCanbas");
+const bt_left = document.getElementById("left");
+const bt_right = document.getElementById("right");
 const ctx = canvas.getContext("2d");
 
 
@@ -29,7 +31,7 @@ const ctx = canvas.getContext("2d");
 let x = canvas.width / 2;
 let y = canvas.height - 30;
 let dx = +2;
-let dy = -4;
+let dy = -5;
 const ballRadius = 10;
 const paddleHeight = 10;
 const paddleWidth = 200;
@@ -152,7 +154,7 @@ function draw() {
                 x = canvas.width / 2;
                 y = canvas.height - 30;
                 dx = +2;
-                dy = -4;
+                dy = -5;
                 paddleX = (canvas.width - paddleWidth) / 2;
             }
         }
